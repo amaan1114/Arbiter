@@ -15,3 +15,9 @@ export const createUser = async(email:string,password:string)=>{
     })
 }
 
+export const setUserVerified = async(email:string)=>{
+    return prisma.user.update({
+        where:{email},
+        data:{isVerified:true}
+    })
+}

@@ -1,15 +1,13 @@
 import { Request, Response ,NextFunction} from "express";
 import {httpResponse} from "../../utils/httpResponse";
-import {signUpService,signInService,getMeService} from "./auth.service"
+import {signUpService,signInService,getMeService,verifyEmailService} from "./auth.service"
 import { cookieConfig } from "../../utils/config";
 
 
 export const signUpController = async (req: Request, res: Response,next:NextFunction )=>{
     try{
         const {email,password} = req.body
-        const { accessToken, refreshToken } = await signInService(email, password);
-        res.cookie('refreshToken', refreshToken, cookieConfig);
-        res.cookie('accessToken', accessToken, cookieConfig);
+        await signUpService(email, password);
         return httpResponse(true,res,req,201,"User Created Successfully")
     }catch(error){
         next(error)
@@ -35,5 +33,15 @@ export const getMeController = async (req: Request, res: Response, next:NextFunc
         return httpResponse(true,res,req,200,"User Data Retrieved Successfully",user)
     }catch(error){
         next(error)
+    }
+}
+
+export const verifyEmailController = async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const {token} = req.body
+        await verifyEmailService(token)
+        return httpResponse(true,res,req,200,"Email Verified Successfully")
+    }catch(err){
+        next(err)
     }
 }
