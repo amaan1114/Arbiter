@@ -18,6 +18,10 @@ enum Difficulty {
   HARD
 }
 
+enum Status {
+  DRAFT
+  PUBLISHED  
+}
 
 model User {
   id Int @id @default(autoincrement()) 
@@ -27,18 +31,28 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   submissions Submission[]
+  adminProblems Problems[]
 }
 
 
 
 model Problems{
   id          Int      @id @default(autoincrement())
+  adminId     Int  
   title       String   
   description String
   difficulty  Difficulty @default(EASY)
+  inputFormat String
+  outputFormat String
+  timeLimit String
+  memoryLimit String
+  status Status @default(DRAFT)
   createdAt   DateTime   @default(now())
   submissions Submission[]
-  
+  testCases testCases[]
+  admin      User    @relation(fields: [adminId], references: [id])
+
+
 }
 
 
@@ -53,4 +67,14 @@ model Submission {
 
   user      User    @relation(fields: [userId], references: [id])
   problem   Problems @relation(fields: [problemId], references: [id])
+}
+
+model testCases {
+  id Int @id @default(autoincrement())
+  problemId Int
+  input String
+  expectedOutput String
+  isSample Boolean @default(false)
+  
+  problem Problems @relation(fields: [problemId],references:[id])
 }

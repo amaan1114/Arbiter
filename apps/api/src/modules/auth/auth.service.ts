@@ -13,7 +13,7 @@ export const signInService = async (email: string, password: string) : Promise<{
         throw new httpError(401,'Invalid password')
     }
     if(user.isVerified === false){
-        const verificationToken = generateAccessToken({email:user.email})
+        const verificationToken = generateAccessToken({id:user.id,email:user.email})
         await sendEmail(user.email, verificationToken)
         throw new httpError(403,'User not verified a verification email has been sent to your email address')
 
@@ -31,7 +31,7 @@ export const signUpService = async (email: string, password: string) => {
     }
     const hashedPassword = bcrypt.hashSync(password, 10)
     const newUser = await createUser(email, hashedPassword)
-    const verificationToken = generateAccessToken({email:newUser.email})
+    const verificationToken = generateAccessToken({id:newUser.id,email:newUser.email})
     await sendEmail(newUser.email, verificationToken)
     return {verificationToken}
 
