@@ -16,3 +16,9 @@ export const getSubmissions = async (problemId: number) => {
         where: { problemId: problemId }
     })
 }
+
+export const getSubmissionById = async (submissionId: number) => {
+    return prisma.submission.findUnique({
+        where: { id: submissionId }
+    })
+}

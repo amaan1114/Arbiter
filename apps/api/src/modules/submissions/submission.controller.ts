@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { createSubmissionService, getUserSubmissionsService, getSubmissionsService } from './submission.service';
+import { createSubmissionService, getUserSubmissionsService, getSubmissionsService ,getSubmissionByIdService} from './submission.service';
 
 export const createSubmissionController = async(req: Request, res: Response, next: NextFunction)=>{
     try{
@@ -44,3 +44,16 @@ export const getSubmissionsController = async(req: Request, res: Response, next:
     }
 }
 
+export const getSubmissionByIdController = async(req: Request, res: Response, next: NextFunction)=>{
+    try{
+        const submissionId = parseInt(req.params.id as string);
+        const submission = await getSubmissionByIdService(submissionId);
+        res.status(200).json({
+            success: true,
+            message: 'Submission retrieved successfully',
+            data: submission
+        })
+    }catch (error) {
+        next(error);
+    }
+}

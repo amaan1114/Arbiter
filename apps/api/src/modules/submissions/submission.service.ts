@@ -1,5 +1,5 @@
 import httpError from '../../utils/httpError'
-import { createSubmission, getUserSubmissions, getSubmissions } from './submission.repo'
+import { createSubmission, getUserSubmissions, getSubmissions,getSubmissionById } from './submission.repo'
 export const createSubmissionService = async (submissionOBJ: any) => {
     if (!submissionOBJ) {
         throw new httpError(400, 'Submission object is required');
@@ -23,3 +23,11 @@ export const getSubmissionsService = async (problemId:number) => {
     const submissions = await getSubmissions(problemId);
     return submissions;
 }   
+
+export const getSubmissionByIdService = async (submissionId:number) => {
+    if (!submissionId) {
+        throw new httpError(400, 'Submission ID is required');
+    }
+    const submission = await getSubmissionById(submissionId);
+    return submission;
+}
