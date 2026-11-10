@@ -35,38 +35,79 @@ model User {
 }
 
 
+model Problems {
+  id          Int        @id @default(autoincrement())
+  adminId     Int
 
-model Problems{
-  id          Int      @id @default(autoincrement())
-  adminId     Int  
-  title       String   
+  title       String
+  slug        String     @unique
   description String
+
   difficulty  Difficulty @default(EASY)
-  inputFormat String
+
+  inputFormat  String
   outputFormat String
-  timeLimit String
-  memoryLimit String
-  status Status @default(DRAFT)
+
+  timeLimit   Int
+  memoryLimit Int
+
+  status      Status     @default(DRAFT)
+
   createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
   submissions Submission[]
-  testCases testCases[]
-  admin      User    @relation(fields: [adminId], references: [id])
+  testCases   testCases[]
 
+  admin       User       @relation(fields: [adminId], references: [id])
 
+  @@index([adminId])
+  @@index([difficulty, status])
 }
 
+enum Language{
+  PYTHON
+  JAVA
+  CPP
+}
+
+enum Verdict {
+  AC
+  WA
+  TLE
+  MLE
+  RE
+  CE
+}
+
+enum SubmissionStatus {
+  PENDING
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
 
 model Submission {
-  id        Int      @id @default(autoincrement())
-  code      String
-  verdict   String
-  createdAt DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  code          String
+  verdict       Verdict?
+  language      Language @default(PYTHON)
+  status        SubmissionStatus @default(PENDING)
 
-  userId    Int
-  problemId Int
+  executionTime Int?
+  memoryUsed    Int?
 
-  user      User    @relation(fields: [userId], references: [id])
-  problem   Problems @relation(fields: [problemId], references: [id])
+  createdAt     DateTime @default(now())
+
+  userId        Int
+  problemId     Int
+
+  user          User     @relation(fields: [userId], references: [id])
+  problem       Problems @relation(fields: [problemId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([problemId, createdAt])
 }
 
 model testCases {

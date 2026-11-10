@@ -7,6 +7,7 @@ import authRouter from "./modules/auth/auth.route";
 import helmet from "helmet";
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import submissionRouter from "./modules/submissions/submission.route";
 const app = express()
 
 app.use(express.json())
@@ -22,7 +23,7 @@ app.get('/health',(req,res)=>{
 
 
 app.use(globalErrorHandler)
-
+app.use('/api/v1/submissions', submissionRouter)
 app.use('/api/v1/problems', problemRouter)
 app.use('/api/v1/auth', authRouter)
 export default app
