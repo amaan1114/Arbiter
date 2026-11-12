@@ -10,6 +10,8 @@ import cookieParser from 'cookie-parser'
 import submissionRouter from "./modules/submissions/submission.route";
 const app = express()
 
+
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors(corsOptions))

@@ -1,5 +1,5 @@
 
-import { languageConfig } from "./language.config";
+import { languageConfig } from "./language.config.js";
 
 // Automatically derives the supported language names
 export type Language = keyof typeof languageConfig;

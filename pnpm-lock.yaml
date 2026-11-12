@@ -23,6 +23,9 @@ importers:
       '@arbiter/database':
         specifier: workspace:*
         version: link:../../packages/shared/database
+      '@arbiter/judge':
+        specifier: workspace:*
+        version: link:../judge
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
@@ -72,6 +75,18 @@ importers:
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
+
+  apps/judge:
+    devDependencies:
+      '@types/node':
+        specifier: 26.4.1
+        version: 26.4.1
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
+      typescript:
+        specifier: 7.0.2
+        version: 7.0.2
 
   apps/web:
     dependencies:
