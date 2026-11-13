@@ -1,10 +1,10 @@
-import { runDockerCommand } from "./docker.client.js";
-import { sandboxConfig } from "./sandbox.config.js";
-import { writeToDocker } from "./docker.client.js";
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
 
-interface Sandbox {
+import { runDockerCommand, writeToDocker } from "./docker.client.js";
+import { sandboxConfig } from "./sandbox.config.js";
+import { readFile } from "node:fs/promises";
+import { resolve, basename } from "node:path";
+
+export interface Sandbox {
   containerId: string;
 }
 
@@ -51,10 +51,7 @@ export async function createSandbox(image: string): Promise<Sandbox> {
     throw new Error("Docker did not return a container ID");
   }
 
-  const startResult = await runDockerCommand([
-    "start",
-    containerId,
-  ]);
+  const startResult = await runDockerCommand(["start", containerId]);
 
   if (startResult.exitCode !== 0) {
     await runDockerCommand(["rm", "-f", containerId]);
@@ -64,7 +61,28 @@ export async function createSandbox(image: string): Promise<Sandbox> {
   return { containerId };
 }
 
+// Writes source code directly into the sandbox.
+export async function writeCodeToSandbox(
+  sandbox: Sandbox,
+  sourceCode: string,
+  filename: string
+): Promise<void> {
+  // Only accept a filename, not an arbitrary path.
+  if (basename(filename) !== filename || !filename) {
+    throw new Error("Invalid source filename");
+  }
 
+  const containerPath =
+    `${sandboxConfig.workingDirectory}/${filename}`;
+
+  await writeToDocker(
+    sandbox.containerId,
+    containerPath,
+    sourceCode
+  );
+}
+
+// Copies an existing host file into the sandbox.
 export async function copyFileToSandbox(
   sandbox: Sandbox,
   hostPath: string,
@@ -83,13 +101,16 @@ export async function executeInSandbox(
   sandbox: Sandbox,
   command: string[]
 ): Promise<CommandResult> {
-  const result = await runDockerCommand([
-    "exec",
-    "--user", sandboxConfig.user,
-    "--workdir", sandboxConfig.workingDirectory,
-    sandbox.containerId,
-    ...command,
-  ], sandboxConfig.commandTimeoutMs);
+  const result = await runDockerCommand(
+    [
+      "exec",
+      "--user", sandboxConfig.user,
+      "--workdir", sandboxConfig.workingDirectory,
+      sandbox.containerId,
+      ...command,
+    ],
+    sandboxConfig.commandTimeoutMs
+  );
 
   return result;
 }

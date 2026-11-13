@@ -3,11 +3,11 @@ import type { TestCaseResult } from "../testcase/testcase.runner.js";
 
 export type Verdict = "AC" | "WA" | "RE" | "TLE";
 
-interface EvaluatedTestCase extends TestCaseResult {
+export interface EvaluatedTestCase extends TestCaseResult {
   verdict: Verdict;
 }
 
-interface EvaluationResult {
+export interface EvaluationResult {
   verdict: Verdict;
   passed: number;
   failed: number;
@@ -39,7 +39,7 @@ function evaluateTestCase(
   }
 
   const actual = normalizeOutput(execution.stdout);
-  const expected = normalizeOutput(expectedOutput);
+  const expected = normalizeOutput(expectedOutput as string);
 
 
   if (actual !== expected) {

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { createSubmissionService, getUserSubmissionsService, getSubmissionsService ,getSubmissionByIdService} from './submission.service';
+import { createSubmissionService, getUserSubmissionsService, getSubmissionsService ,getSubmissionByIdService,runSubmissionService} from './submission.service';
 
 export const createSubmissionController = async(req: Request, res: Response, next: NextFunction)=>{
     try{
@@ -9,6 +9,21 @@ export const createSubmissionController = async(req: Request, res: Response, nex
         res.status(201).json({
             success: true,
             message: 'Submission created successfully',
+            data: submisison
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const runSubmissionController = async(req: Request, res: Response, next: NextFunction)=>{
+    try{
+        const submissionOBJ = req.body;
+
+        const submisison = await runSubmissionService(submissionOBJ);
+        res.status(201).json({
+            success: true,
+            message: 'Submission ran successfully',
             data: submisison
         })
     } catch (error) {

@@ -4,11 +4,11 @@ import {
   executeInSandbox,
 } from "../sandbox/sandbox.manager.js";
 
-interface Sandbox {
+export interface Sandbox {
   containerId: string;
 }
 
-interface CompilationResult {
+export interface CompilationResult {
   success: boolean;
   stdout: string;
   stderr: string;

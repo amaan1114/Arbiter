@@ -8,17 +8,15 @@ interface Sandbox {
 interface TestCase {
   id: string;
   input: string;
-  expectedOutput: string;
+  expectedOutput?: string;
 }
-
-
 
 type ExecutionResult = Awaited<ReturnType<typeof executeCode>>;
 
 export interface TestCaseResult {
   testCaseId: string;
   input: string;
-  expectedOutput: string;
+  expectedOutput?: string;
   execution: ExecutionResult;
 }
 
@@ -40,7 +38,9 @@ export async function runTestCases(
     results.push({
       testCaseId: testCase.id,
       input: testCase.input,
-      expectedOutput: testCase.expectedOutput,
+      ...(testCase.expectedOutput !== undefined && {
+        expectedOutput: testCase.expectedOutput,
+      }),
       execution,
     });
   }
